@@ -29,6 +29,7 @@ Citation
 **Please consider cite our work if you find it helpful.**
 
 @article{hou22deep,
+
 	title={Deep Posterior Distribution-based Embedding for Hyperspectral Image Super-resolution},
 	author={Hou, Jinhui and Zhu, Zhiyu and Hou, Junhui and Zeng, Huanqiang and Wu, Jinjian and Zhou, Jiantao},
 	journal={IEEE Transactions on Image Processing},
