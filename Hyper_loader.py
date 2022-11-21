@@ -12,8 +12,7 @@ new_load = lambda *a, **k: np.load(*a, allow_pickle=True, **k)
 
 class Hyper_dataset(Dataset):
     """
-    get the Hyperspectral image and corrssponding RGB image
-    use all data : high resolution HSI, high resolution MSI, low resolution HSI
+    get the high resolution and low resolution Hyperspectral images
     """
     def __init__(self, output_shape=512, ratio=1, Training_mode='Train', data_name='CAVE', use_generated_data=False,
                  use_all_data=True):
@@ -22,26 +21,26 @@ class Hyper_dataset(Dataset):
         if data_name == 'CAVE':
 
             # training and testing mat files
-            self.path = '/datasets/HSI/CAVE/TrainTestMAT/' + str(opt.upscale_factor) + '/'
+            self.path = './datasets/HSI/CAVE/TrainTestMAT/' + str(opt.upscale_factor) + '/'
 
             # training and testing filename
-            name = scio.loadmat("/datasets/HSI/CAVE/cave_train_test_filename.mat")
+            name = scio.loadmat("./datasets/HSI/CAVE/cave_train_test_filename.mat")
 
             self.train_name = name['train']
             self.test_name = name['test']
-            self.num_pre_img = 12
-            self.train_len = 20 * 144
-            self.test_len = 12
+            self.num_pre_img = len(name['test'])
+            self.train_len = len(name['train']) * len(name['test']) * len(name['test'])
+            self.test_len = len(name['test'])
         elif data_name == 'Harvard':
-            self.path = '/datasets/HSI/Harvard/TrainTestMat_256/'+str(opt.upscale_factor)+'/'
+            self.path = './datasets/HSI/Harvard/TrainTestMat_256/'+str(opt.upscale_factor)+'/'
 
-            name = scio.loadmat("/datasets/HSI/Harvard/harvard_train_test_filename.mat")
+            name = scio.loadmat("./datasets/HSI/Harvard/harvard_train_test_filename.mat")
             self.train_name = name['train']
             self.test_name = name['test']
             self.num_width = int(256/64) - 1
             self.num_height = int(256/64) - 1
-            self.train_len = 800 * self.num_width * self.num_height
-            self.test_len = 10
+            self.train_len = len(name['train']) * self.num_width * self.num_height
+            self.test_len = len(name['test'])
             
         self.TM = Training_mode
 
@@ -139,3 +138,4 @@ class Hyper_dataset(Dataset):
                 hsi_lr = np.transpose(hsi_lr, (2, 0, 1)).astype(np.float32)
 
                 return torch.from_numpy(hsi_lr).float(), torch.from_numpy(hsi_hr).float()
+
